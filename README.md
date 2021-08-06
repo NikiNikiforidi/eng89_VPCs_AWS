@@ -2,14 +2,14 @@
 
 ### Create VPC on AWS
 
-- Name vpc
-- **IPv4 CIDR block** add ip (example 10.201.0.0/16)
+- Name VPC
+- **IPv4 CIDR block** -> add ip (example 10.201.0.0/16)
 - **Create VPC**
 <br> </br>
 
 - ----------------------------------
 ### Create Internet Gateway
-- Name tag
+- **Name tag** -> Name your internet gateway
 - **Create internet gateway**
 <br> </br>
 - Once created, select your internet gateway 
@@ -19,20 +19,21 @@
 
 - ----------------------------------------------
 ### Create subnets
-- Add your VPC to attach to subnets
 - Create two subnets: 
+	- Add your VPC to attach to both subnets
 
 
-- Public subnet:
+
+- **Public subnet**:
 	- Name public subnet
 	- **Availability zone** -> **Europe(ireland) / eu-west-1a**
-	- **Ipv4 CIDR block** -> 10.201.1.0/24
+	- **IPv4 CIDR block** -> Add IP (example 10.201.1.0/24)
 <br></br>
 
-- Private subnet:
+- **Private subnet**:
 	- Name private subnet
 	- **Availability zone** -> **Europe(ireland) / eu-west-1a**
-	- **Ipv4 CIDR block** -> 10.201.2.0/24
+	- **IPv4 CIDR block** -> Add IP (example 10.201.2.0/24)
 
 - **Create Subnet**
 <br> </br>
@@ -43,11 +44,11 @@
 - **VPC** -> your VPC
 - **Create route table**
 <br> </br>
-- **Edit route**
+- **Select table and Edit routes**
 - **Add route**:
 	- **Destination** -> 0.0.0.0/0 
-	- **target** -> **Internet Gateway** -> select your internet gateway
-**Save changes**
+	- **Target** -> **Internet Gateway** -> select your internet gateway
+- **Save changes**
 <br> </br>
 
 - -----------------------------
@@ -55,7 +56,7 @@
 - Select public subnet
 - Select **route table** -> **Edit route table association**
 - Under **Route table ID**:
-	 - Change **Main route tabl** to your route table
+	 - Change **Main route table** to your route table
 - **Save**
 <br> </br>
 
@@ -73,9 +74,7 @@
 		- **Type** -> SSH, **Source type** -> My IP
 		- **Port range** -> 3000, **Source** -> 0.0.0.0/0 (Will be needed later on to allow for app reverse proxy)
 - **Create security group**
-
 <br> </br>
-
 - Data Base security group:
 <br> </br>
 
@@ -83,7 +82,7 @@
 	- Add description 
 	- **VPC** -> your VPC
 	- **Inbound rules**:
-		- **Type** -> Custom TCP, **Port range** -> 27017, **Source type** -> enter the name of your app security group
+		- **Type** -> Custom TCP, **Port range** -> 27017, **Source type** -> enter the name of your app security group and select the option that comes up
 		
 
 - **Create security group**
@@ -91,12 +90,12 @@
 <br> </br>
 - -----------------------------------------
 ### Create nerwork ACLs
-- Create Public ACL
+- **Create Public ACL**
 	- Name your public network ACL
 	- **VPC** -> your VPC
 	- **Create network ACL**
 <br> </br>
-	- Select and open your public ACL
+- Select and open your public ACL
 <br> </br>
 	- **Inbound rules** -> Edit Inbound rules:
 		- **Rule number** -> 100, **Type** -> HTTP
@@ -106,7 +105,7 @@
 - **Save changes**
 <br> </br>
 
-	- **Outbound rules** -> Edit ourbound rules:
+	- **Outbound rules** -> Edit outbound rules:
 		- **Rule number** -> 100, **Type** -> HTTP
 		- **Rule number** -> 110, **Port range** -> 27017, **Destination** -> private.subnet.ip/24   (this case 10.201.2.0/24)
 		- **Rule number** -> 120, **Port range** -> 1024-65535
@@ -114,12 +113,12 @@
 
 <br> </br>
 
-- Create Private ACL
+- **Create Private ACL**
 	- Name your private network ACL
 	- **VPC** -> your VPC
 	- **Create network ACL**
 <br> </br>
-	- Select and open your private ACL
+- Select and open your private ACL
 <br> </br>
 	- **Inbound rules** -> Edit Inbound rules:
 		- **Rule number** -> 100, **Type** -> HTTP
@@ -150,7 +149,7 @@
 - ---------------------------------------
 ### Create a webserver server EC2 instance
 
-**IF YOU ALREADY HAVE AN AMI INSTANCE OF THE APP SERVER, LAUNCH IT AND FOLLOW BELOW STEPS**
+**IF YOU ALREADY HAVE AN AMI INSTANCE OF THE APP SERVER, LAUNCH IT AND FOLLOW BELOW STEPS WHERE NEDED**
 <br> </br> 
 - **Choose AMI**
 	- Select **Ubuntu Server 16.04 LTS, 64-bit**
@@ -166,28 +165,23 @@
 - **Review and Launch** -> **Launch**
 - **Select an existing key pair...** -> Select your own key (In my case eng89_devops.pem)
 - **Launch Instance**
-<br> </br>
-- SSH into instance, make sure you ssh in the same directory as the key you used
+
 <br> </br>
 
 - ------------------------------------------
 ### Copy app folder from local host to app server instance
+- DO THIS STEP ONLY IF YOU'RE CREATEING APP INSTANCE FROM SCRATCH
+<br> </br>
 - In your terminal, navigate to the directory with the app folder
 - Run command:
-``` scp -i ~/.ssh/eng89_devops.pem -r app/ ec2-user@34.243.114.235:~/app/```
-- Where: 
-	- `scp` Securly copies files
-	- `~/.ssh...` is path to where to fetch the file
-	- `- r` copy all items
-	- `app` from this current location
- 	- `ec2-user...` copy to specific instance with public ip
-	- `~/app/ `where you want to copy it
-- Once copy complete, you should have app folder in the instance
+``` scp -i ~/.ssh/eng89_devops.pem -r app/ ec2-user@APP.PUBLIC.SERVER.IP:~/app/```
+
+- Once copy complete, you should have app folder in your app instance
 <br> </br>
 - -----------------------------------------
 ### Create a database server EC2 instance 
 
-**IF YOU ALREADY HAVE AN AMI INSTANCE OF THE DB SERVER, LAUNCH IT AND FOLLOW BELOW STEPS**
+**IF YOU ALREADY HAVE AN AMI INSTANCE OF THE DB SERVER, LAUNCH IT AND FOLLOW BELOW STEPS WHERE NEEDED**
 <br> </br>
 - **Choose AMI**
 	- Select **Ubuntu Server 16.04 LTS, 64-bit**
@@ -207,13 +201,11 @@
 
 - -----------------------------------
 ### Create Bastion public subnet 
-- Connects to db server
-<br> </br>
 - **Create subnet**
 	- **VPC** -> your vpc
 	- **Subnet name** -> name your subnet
 	- **Availability zone** -> ...eu-west-1a
-	- **IPv4 CIDR block** -> 10.201.3.0/24
+	- **IPv4 CIDR block** -> Add IP (example 10.201.3.0/24)
 	- **Create subnet**
 <br> </br>
 
@@ -226,8 +218,8 @@
 - ---------------------------------
 ### Create new network ACL for Bastion subnet
 - **Create network ACL**
-	- **Name** -> name the acl
-	- **VPC** -> your vpc
+	- **Name** -> name the ACL
+	- **VPC** -> your VPC
 - **Create nework ACL**
 <br> </br>
 - Open and select new ACL
@@ -268,11 +260,11 @@
 - **Review and Launch** -> **Launch**
 - **Select an existing key pair...** -> Select your own key (In my case eng89_devops.pem)
 <br> </br>
-- **Copy your .pem key into the Bastion server**
+- **COPY YOUR .PEM KEY INTO THE BASTION SERVER**
 - Make sure you're in directory with the .pem key
 - Run below command to copy over to server
 ```
- scp -i ~/.ssh/eng89_devops.pem -r eng89_devops.pem/ ubuntu@public.bastion.IP:~/
+ scp -i ~/.ssh/eng89_devops.pem -r eng89_devops.pem/ ubuntu@PUBLIC.BASTION.SERVER.IP:~/
 
 ```
 <br> </br>
@@ -284,36 +276,36 @@
 ### Updating Private network ACL's inbound and outbound rules to allow Bastion access
 
 - **Edit inbound rules**
-	- **Rule number** -> 120, **Type** -> SSH, **Source** -> Bastion.public.ip/24 (In tmy case 10.201.3.0/24)
+	- **Rule number** -> 120, **Type** -> SSH, **Source** -> Bastion.public.ip/24 (In my case 10.201.3.0/24)
 	<br> </br>
--**Edit Outbound rules**
-	- **Rule number** -> 120, **Port range** -> 1024-65535, **Destination** -> Bastion.public.ip/24 (In my case 10.201.3.0/24)
+- **Edit Outbound rules**
+	- **Rule number** -> 120, **Port range** -> 1024-65535, **Destination** -> Bastion.public.ip/24
 - **Save changes**
 <br> </br>
 - --------------------------------------
-### Updating Database security group inbound and outbound rules to allow Bastion access
+### Updating Database security group inbound rules to allow Bastion access
 - **Edit inbound rules**
  	- **Type** -> SSH, **Source** -> Bastion securty group
 - **Save rules**
 <br> </br>
 - ----------------------------------
-### Setting up instances and launching Sparta app
+### Setting up instances and launching Sparta App
 
-- Start your App, Database and Bastion instance
+- Start your App, Database and Bastion instances
 - SSH into App and Bastion instance
-	- If you created your instances from AMIs, remeber to change `root` -> `ubuntu`
-- In Bastion instace, navigate to the file with your .pem key (In my case `cd .sshl`)
+	- If you created your instances from AMIs, remember to change `root` -> `ubuntu` when running SSH command
+- In Bastion instace, navigate to the file with your .pem key (In my case `cd .ssh/`)
 	- SSH into Database from whithin Bastion instance
 <br> </br>
 - **Setting up App and DB**
 	- If you used your app/db instace AMIs, you will not need to install mongod, nginx etc.
-	- If you started your instances from scratch, follow these steps: https://github.com/NikiNikiforidi/eng89_2tier_app_deployment
+	- If you started your instances from scratch, follow these steps to get up App and DB: https://github.com/NikiNikiforidi/eng89_2tier_app_deployment
 <br> </br>
 <br> </br>
-- **Set up reverse proxy in App instance if from AMI**
-	- Go to cd /etc/nginx/sites-available
+- **Set up reverse proxy in App instance, if from AMI**
+	- Navigate to `cd /etc/nginx/sites-available`
 	- Change default file to:
-	```
+```
 	server {
     listen 80;
 
@@ -328,14 +320,20 @@
     }
 }
 	
-	```
+
+
+```
+
+
 	- To chech nginx config, run: `sudo nginx -t`
 	- Restart nginx `sudo systemctl restart nginx`
-<br> </br>br>
+- To check it working enter, `app_public_ip` in browser
+<br> </br>
 - **Update persistant veriable**
-	- To create, or override old variable, run:
+	- To create, OR override old variable, run:
 	`sudo echo export DB_HOST="mongodb://DB.SERVER.PRIVATE.IP:27017/posts" >> ~/.bashrc`
 	<br> </br>
+	- Then run: 
 	`source ~/.bashrc`
 	- To check if varaible exists, run `env` or `printenv DB_HOST`
 <br> </br>
