@@ -1,5 +1,13 @@
 # VPCs, subnets, securtiy groups and more.
 
+
+![vpc](https://user-images.githubusercontent.com/86292184/128539410-8ce15da4-d004-4d71-ae84-35a023f790ee.png)
+<br> </br>
+
+
+
+
+- -----------------------------------
 ### Create VPC on AWS
 
 - Name VPC
